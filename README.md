@@ -1,2 +1,2 @@
-# alissa_interpret_client
+# Alissa Interpret Client
 Alissa Interpret Public Api Client
