@@ -20,7 +20,11 @@ client = AlissaInterpret(
     password=''
 )
 
-print(client.get_analyses(reference='A_U175754CFgiab12878_gvcf-test_2'))
-print(client.get_analyses(last_updated_by='melferink'))
-print(client.get_analysis(46098))
+# Get analyses
+client.get_analyses(reference='A_U175754CFgiab12878_gvcf-test_2')
+client.get_analyses(last_updated_by='melferink')
+client.get_analysis(46098)
+
+# Upload vcf file
+client.post_data_file('path/to/file.vcf', type='VCF_FILE'))
 ```
