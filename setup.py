@@ -24,5 +24,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     packages=setuptools.find_packages(),
-    install_requires=requirements
+    install_requires=requirements,
+    entry_points={
+        'console_scripts': ['alissa_client=alissa_interpret_client.cli:main'],
+    }
 )
