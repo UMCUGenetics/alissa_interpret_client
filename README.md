@@ -12,7 +12,7 @@ pip install git+ssh://github.com/UMCUGenetics/alissa_interpret_client.git
 ```
 python3 -m venv venv
 source venv/bin/activate
-pip install git+ssh://github.com/UMCUGenetics/alissa_interpret_client.git
+pip install -e .
 ```
 
 ## Example Python package
