@@ -94,3 +94,36 @@ class AlissaInterpret(object):
         files = {'file': open(file, 'r')}
         params = {'type': type}
         return self._post('data_files', files=files, params=params)
+
+    def get_patients(self, **kwargs):
+        """Get all patients. When kwargs are provided the result is limited to the patients matching the criteria."""
+        params = self._get_params(**kwargs)
+        return self._get('patients', params)
+
+    def get_patient(self, id):
+        """
+        Get an patient via id.
+
+        :param id: analysis id
+        """
+        return self._get(f'patients/{id}')
+
+    def post_patient(self, accession_number, family_identifier, gender, folder_name, comments):
+        """
+        Upload a new file.
+
+        :param accession_number: The unique identifier of the patient.
+        :param family_identifier: The unique identifier of the family.
+        :param gender: The gender of the patient.
+        :param folder_name: The folder name of the patient.
+        :param comments: Comments about the patient.
+
+        """
+        data = {
+            'accessionNumber': accession_number,
+            'comments': comments,
+            'familyIdentifier': family_identifier,
+            'folderName': folder_name,
+            'gender': gender
+        }
+        return self._post('patients', json=data)

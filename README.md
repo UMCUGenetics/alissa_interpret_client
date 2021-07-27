@@ -27,13 +27,25 @@ client = AlissaInterpret(
     password=''
 )
 
+# Upload vcf file
+client.post_data_file('path/to/file.vcf', type='VCF_FILE'))
+
+# Upload and get patient(s)
+client.get_patients(accessionNumber='giab')
+client.get_patient(id='27592')
+client.post_patient(
+    accession_number='sample_id',
+    family_identifier='family_id',
+    gender='gender',
+    folder_name='folder_name',
+    comments='comments'
+)
+
 # Get analyses
 client.get_analyses(reference='A_U175754CFgiab12878_gvcf-test_2')
 client.get_analyses(last_updated_by='melferink')
 client.get_analysis(46098)
 
-# Upload vcf file
-client.post_data_file('path/to/file.vcf', type='VCF_FILE'))
 ```
 
 ## Example CLI
