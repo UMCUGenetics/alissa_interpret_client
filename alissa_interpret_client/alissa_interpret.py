@@ -95,6 +95,37 @@ class AlissaInterpret(object):
         params = {'type': type}
         return self._post('data_files', files=files, params=params)
 
+    def get_lab_results(self, patient_id):
+        """
+        Get all lab results of a patient
+
+        :param patient_id: patient id
+        """
+        return self._get(f'patients/{patient_id}/lab_results')
+
+    def get_lab_result(self, id):
+        """
+        Get a lab result via its id.
+
+        :param id: lab result id
+        """
+        return self._get(f'lab_results/{id}')
+
+    def post_lab_result(self, patient_id, data_file_id, sample):
+        """
+        Create a new lab result.
+
+        :param patient_id: The unique identifier of a patient
+        :param data_file_id: The unique identifier of a data file.
+        :param sample: Sample name in data file
+
+        """
+        data = {
+            'dataFileId': data_file_id,
+            'sampleIdentifier': sample,
+        }
+        return self._post(f'patients/{patient_id}/lab_results', json=data)
+
     def get_patients(self, **kwargs):
         """Get all patients. When kwargs are provided the result is limited to the patients matching the criteria."""
         params = self._get_params(**kwargs)
@@ -104,13 +135,13 @@ class AlissaInterpret(object):
         """
         Get an patient via id.
 
-        :param id: analysis id
+        :param id: patient id
         """
         return self._get(f'patients/{id}')
 
     def post_patient(self, accession_number, family_identifier, gender, folder_name, comments):
         """
-        Upload a new file.
+        Create a new patient.
 
         :param accession_number: The unique identifier of the patient.
         :param family_identifier: The unique identifier of the family.
