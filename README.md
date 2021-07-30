@@ -38,7 +38,7 @@ patient = client.post_patient(
     folder_name='folder_name',
     comments='comments'
 )
-client.get_patients(accessionNumber='giab')
+client.get_patients(accession_number='giab')
 client.get_patient(id='27592')
 
 

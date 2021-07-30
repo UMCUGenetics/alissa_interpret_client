@@ -1,5 +1,6 @@
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_oauthlib import OAuth2Session
+import urllib
 
 from . import utils
 
@@ -49,17 +50,9 @@ class AlissaInterpret(object):
         uri = f'{self.baseuri}/interpret/api/2/{end_point}'
         return self.session.post(uri, data, json, **kwargs).json()
 
-    def _get_params(self, **kwargs):
-        """Convert keyword arguments to a dictionary."""
-        params = dict()
-        for key, value in kwargs.items():
-            if value is not None:
-                params[utils.snake_to_camel_case(key)] = value
-        return params
-
     def get_analyses(self, **kwargs):
         """Get all analyses. When kwargs are provided the result is limited to the analyses matching the criteria."""
-        params = self._get_params(**kwargs)
+        params = utils.kwargs_to_dict(**kwargs)
         return self._get('analyses', params)
 
     def get_analysis(self, id):
@@ -72,7 +65,7 @@ class AlissaInterpret(object):
 
     def get_data_files(self, **kwargs):
         """Get all data files. When kwargs are provided the result is limited to the data files matching the criteria."""
-        params = self._get_params(**kwargs)
+        params = utils.kwargs_to_dict(**kwargs)
         return self._get('data_files', params)
 
     def get_data_file(self, id):
@@ -92,7 +85,7 @@ class AlissaInterpret(object):
                      In order to use the default VCF parser the value ‘VCF_FILE’ should be provided.
         """
         files = {'file': open(file, 'r')}
-        params = {'type': type}
+        params = urllib.parse.urlencode({'type': type}, quote_via=urllib.parse.quote)
         return self._post('data_files', files=files, params=params)
 
     def get_lab_results(self, patient_id):
@@ -128,7 +121,7 @@ class AlissaInterpret(object):
 
     def get_patients(self, **kwargs):
         """Get all patients. When kwargs are provided the result is limited to the patients matching the criteria."""
-        params = self._get_params(**kwargs)
+        params = utils.kwargs_to_dict(**kwargs)
         return self._get('patients', params)
 
     def get_patient(self, id):
