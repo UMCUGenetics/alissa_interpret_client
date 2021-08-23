@@ -1,4 +1,4 @@
-# Alissa Interpret Public API Python Client 
+# Alissa Interpret Public API Python Client
 
 ![python-package](https://github.com/UMCUGenetics/alissa_interpret_client/actions/workflows/python-package.yml/badge.svg)
 
@@ -22,7 +22,7 @@ pip install -e .
 from alissa_interpret_client.alissa_interpret import AlissaInterpret
 
 client = AlissaInterpret(
-    baseuri='https://umcutrecht.test.alissa.agilent.com',
+    base_uri='https://umcutrecht.test.alissa.agilent.com',
     client_id='',
     client_secret='',
     username='',
@@ -58,5 +58,5 @@ client.get_analysis(46098)
 ## Example CLI
 ```bash
 source venv/bin/activate
-alissa_client upload_vcf <baseuri> <client_id> <client_secret> <username> <password> <path/to/file.vcf>
+alissa_client upload_vcf <base_uri> <client_id> <client_secret> <username> <password> <path/to/file.vcf>
 ```

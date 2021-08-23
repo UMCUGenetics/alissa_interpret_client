@@ -8,46 +8,46 @@ from . import utils
 class AlissaInterpret(object):
     "Alissa Interpret Public Api Client interface"
 
-    def __init__(self, baseuri, client_id, client_secret, username, password):
+    def __init__(self, base_uri, client_id, client_secret, username, password):
         """Construct a new Alissa Interpret Public Api Client interface
 
-        :param baseuri: Base uri for the Alissa server
+        :param base_uri: Base uri for the Alissa server
         :param client_id: client id received from Agilent
         :param client_secret: client secret received from Agilent
         :param username: account name of the Alissa user account
         :param password: account password of Alissa the user account
         """
-        self.baseuri = baseuri
+        self.base_uri = base_uri
 
         # Authenticate with OAuth2 and create a new session
         # ToDo: Add token caching to reuse token between sessions.
         self.session = OAuth2Session(client=LegacyApplicationClient(client_id=client_id))
         self.session.fetch_token(
-            token_url=f'{self.baseuri}/auth/oauth/token',
+            token_url=f'{self.base_uri}/auth/oauth/token',
             username=username, password=password,
             client_id=client_id, client_secret=client_secret
         )
 
     def _get(self, end_point, params=None, **kwargs):
         """
-        Get data from the end_point, combining baseuri, api uri and end_point. Return the response as decoded json
+        Get data from the end_point, combining base_uri, api uri and end_point. Return the response as decoded json
 
         :param end_point: end point to get data from
         :param params: Optional params dict
 
         """
-        uri = f'{self.baseuri}/interpret/api/2/{end_point}'
+        uri = f'{self.base_uri}/interpret/api/2/{end_point}'
         return self.session.get(uri, params=params, **kwargs).json()
 
     def _post(self, end_point, data=None, json=None, **kwargs):
         """
-        Post data to the end_point, combining baseuri, api uri and end_point. Return the response as decoded json
+        Post data to the end_point, combining base_uri, api uri and end_point. Return the response as decoded json
 
         :param end_point: end point to post data to
         :param data: Optional dictionary, list of tuples, bytes, or file-like object
         :param json: Optional json data
         """
-        uri = f'{self.baseuri}/interpret/api/2/{end_point}'
+        uri = f'{self.base_uri}/interpret/api/2/{end_point}'
         return self.session.post(uri, data, json, **kwargs).json()
 
     def get_analyses(self, **kwargs):

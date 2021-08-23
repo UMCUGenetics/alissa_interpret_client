@@ -6,7 +6,7 @@ from alissa_interpret_client.alissa_interpret import AlissaInterpret
 def upload_vcf(args):
     """Upload vcf file function."""
     client = AlissaInterpret(
-        baseuri=args.baseuri,
+        base_uri=args.base_uri,
         client_id=args.client_id,
         client_secret=args.client_secret,
         username=args.username,
@@ -25,7 +25,7 @@ def main():
     subparser = parser.add_subparsers()
 
     alissa_connection_parser = argparse.ArgumentParser(add_help=False)
-    alissa_connection_parser.add_argument('baseuri', help='Alissa API baseuri')
+    alissa_connection_parser.add_argument('base_uri', help='Alissa API base uri')
     alissa_connection_parser.add_argument('client_id', help='Alissa API client id')
     alissa_connection_parser.add_argument('client_secret', help='Alissa API client secret')
     alissa_connection_parser.add_argument('username', help='Alissa API username')
