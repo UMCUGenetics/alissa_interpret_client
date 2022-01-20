@@ -45,7 +45,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     database_columns = [
-        "analysis_reference", "analysis_type", "created_on", "last_updated_on",
+        "analysis_reference", "analysis_type", "analysis_pipeline", "target_panel", "created_on", "last_updated_on",
         "molecular_variant_count", "cnv_count", "manual_review_count_Y", "manual_review_count_Y2", "manual_review_count_Y3"
     ]
     database_analyses = {}
@@ -82,6 +82,8 @@ if __name__ == '__main__':
             analysis_id = analysis['id']
             analysis_type = analysis['analysisType']
             analysis_reference = analysis['reference']
+            analysis_pipeline = analysis['analysisPipelineName']
+            analysis_panel = ','.join(analysis['targetPanelNames'])
 
             # Lookup analysis in database, if in database print previous result and skip.
             if analysis_reference in database_analyses:
@@ -104,7 +106,7 @@ if __name__ == '__main__':
             # skip analysis with cnv results
             if cnv_count >= 1:
                 print((
-                    f"{analysis_reference}\t{analysis_type}\t{analysis['createdOn'][0:10]}\t"
+                    f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t{analysis['createdOn'][0:10]}\t"
                     f"{analysis['lastUpdatedOn'][0:10]}\t{mol_var_count}\t{cnv_count}\tskipped_analysis_contains_cnv"
                 ), file=database_file)
                 continue
@@ -112,7 +114,7 @@ if __name__ == '__main__':
             # skip analysis with a lot of variants (slow export)
             if mol_var_count > 10000:
                 print((
-                    f"{analysis_reference}\t{analysis_type}\t{analysis['createdOn'][0:10]}\t"
+                    f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t{analysis['createdOn'][0:10]}\t"
                     f"{analysis['lastUpdatedOn'][0:10]}\t{mol_var_count}\t{cnv_count}\tskipped_large_analysis"
                 ), file=database_file)
                 continue
@@ -141,7 +143,7 @@ if __name__ == '__main__':
 
             # Print result
             print((
-                f"{analysis_reference}\t{analysis_type}\t{analysis['createdOn'][0:10]}\t"
+                f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t{analysis['createdOn'][0:10]}\t"
                 f"{analysis['lastUpdatedOn'][0:10]}\t{mol_var_count}\t{cnv_count}\t"
                 f"{manual_review_count[0]}\t{manual_review_count[1]}\t{manual_review_count[2]}"
             ), file=database_file)
