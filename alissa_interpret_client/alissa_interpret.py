@@ -38,7 +38,6 @@ class AlissaInterpret(object):
         """
         uri = f'{self.base_uri}/interpret/api/2/{end_point}'
         response = self.session.get(uri, params=params, **kwargs)
-        #print(response.json())
         response.raise_for_status()  # Raise exception on request error
         return response.json()
 
@@ -67,7 +66,7 @@ class AlissaInterpret(object):
         :param id: analysis id
         """
         return self._get(f'analyses/{id}')
-    
+
     def get_sources(self, id):
         """
         Get all sources used in an analysis.
@@ -75,7 +74,7 @@ class AlissaInterpret(object):
         :param id: analysis id
         """
         return self._get(f'analyses/{id}/sources')
-    
+
     def get_report(self, id):
         """
         Get all reports of an analysis.

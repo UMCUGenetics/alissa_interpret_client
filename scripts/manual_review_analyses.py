@@ -106,16 +106,18 @@ if __name__ == '__main__':
             # skip analysis with cnv results
             if cnv_count >= 1:
                 print((
-                    f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t{analysis['createdOn'][0:10]}\t"
-                    f"{analysis['lastUpdatedOn'][0:10]}\t{mol_var_count}\t{cnv_count}\tskipped_analysis_contains_cnv"
+                    f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t"
+                    f"{analysis['createdOn'][0:10]}\t{analysis['lastUpdatedOn'][0:10]}\t"
+                    f"{mol_var_count}\t{cnv_count}\tskipped_analysis_contains_cnv"
                 ), file=database_file)
                 continue
 
             # skip analysis with a lot of variants (slow export)
             if mol_var_count > 10000:
                 print((
-                    f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t{analysis['createdOn'][0:10]}\t"
-                    f"{analysis['lastUpdatedOn'][0:10]}\t{mol_var_count}\t{cnv_count}\tskipped_large_analysis"
+                    f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t"
+                    f"{analysis['createdOn'][0:10]}\t{analysis['lastUpdatedOn'][0:10]}\t"
+                    f"{mol_var_count}\t{cnv_count}\tskipped_large_analysis"
                 ), file=database_file)
                 continue
 
@@ -143,7 +145,7 @@ if __name__ == '__main__':
 
             # Print result
             print((
-                f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t{analysis['createdOn'][0:10]}\t"
-                f"{analysis['lastUpdatedOn'][0:10]}\t{mol_var_count}\t{cnv_count}\t"
+                f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t"
+                f"{analysis['createdOn'][0:10]}\t{analysis['lastUpdatedOn'][0:10]}\t{mol_var_count}\t{cnv_count}\t"
                 f"{manual_review_count[0]}\t{manual_review_count[1]}\t{manual_review_count[2]}"
             ), file=database_file)
