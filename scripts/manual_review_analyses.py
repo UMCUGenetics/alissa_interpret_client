@@ -1,5 +1,5 @@
 """manual_review_analyses.py - counts manual review variants in patient or inheritance (trio) analysis.
-
+    Script functionality is based on GENOOM072 - NGS Sequentie-analyse m.b.v. Agilent Alissa Interpret.
 ToDo:
     - Discuss with Agilent about directly filtering 'manual review' variants. Exporting all variants takes a lot of time.
 """
@@ -105,47 +105,39 @@ if __name__ == '__main__':
 
             # skip analysis with cnv results
             if cnv_count >= 1:
-                print((
-                    f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t"
-                    f"{analysis['createdOn'][0:10]}\t{analysis['lastUpdatedOn'][0:10]}\t"
-                    f"{mol_var_count}\t{cnv_count}\tskipped_analysis_contains_cnv"
-                ), file=database_file)
-                continue
+                result = 'skipped_analysis_contains_cnv'
 
             # skip analysis with a lot of variants (slow export)
-            if mol_var_count > 10000:
-                print((
-                    f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t"
-                    f"{analysis['createdOn'][0:10]}\t{analysis['lastUpdatedOn'][0:10]}\t"
-                    f"{mol_var_count}\t{cnv_count}\tskipped_large_analysis"
-                ), file=database_file)
-                continue
+            elif mol_var_count > 10000:
+                result = 'skipped_large_analysis'
 
-            # Export variants and count manual review
-            export_id = post_variants_export(client, analysis_type, analysis_id)
-            export = None
-            while export is None:
-                try:
-                    time.sleep(mol_var_count/100 + 1)  # delay to request exported report, min 1 sec.
-                    export = get_variants_export(client, analysis_type, analysis_id, export_id)
-                except HTTPError:
-                    pass
+            else:
+                # Export variants and count manual review
+                export_id = post_variants_export(client, analysis_type, analysis_id)
+                export = None
+                while export is None:
+                    try:
+                        time.sleep(mol_var_count/100 + 1)  # delay to request exported report, min 1 sec.
+                        export = get_variants_export(client, analysis_type, analysis_id, export_id)
+                    except HTTPError:
+                        pass
 
-            # Count manual review labels
-            manual_review_count = [0, 0, 0]  # manual_review labes Y, Y2, Y3 (rare)
-            for variant in export:
-                variant_labels = variant['classificationTreeLabelsScore']['labels'].lower()  # Correct upercase labels
+                # Count manual review labels
+                manual_review_count = [0, 0, 0]  # manual_review labes Y, Y2, Y3 (rare)
+                for variant in export:
+                    variant_labels = variant['classificationTreeLabelsScore']['labels'].lower()  # Correct upercase labels
 
-                if 'y,manual review' in variant_labels:
-                    manual_review_count[0] += 1
-                if 'y2,manual review' in variant_labels:
-                    manual_review_count[1] += 1
-                if 'y3 (rare),manual review' in variant_labels:
-                    manual_review_count[2] += 1
+                    if 'y,manual review' in variant_labels:
+                        manual_review_count[0] += 1
+                    if 'y2,manual review' in variant_labels:
+                        manual_review_count[1] += 1
+                    if 'y3 (rare),manual review' in variant_labels:
+                        manual_review_count[2] += 1
+                result = '\t'.join([str(count) for count in manual_review_count])
 
             # Print result
             print((
                 f"{analysis_reference}\t{analysis_type}\t{analysis_pipeline}\t{analysis_panel}\t"
                 f"{analysis['createdOn'][0:10]}\t{analysis['lastUpdatedOn'][0:10]}\t{mol_var_count}\t{cnv_count}\t"
-                f"{manual_review_count[0]}\t{manual_review_count[1]}\t{manual_review_count[2]}"
+                f"{result}"
             ), file=database_file)
