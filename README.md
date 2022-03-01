@@ -1,7 +1,6 @@
 # Alissa Interpret Public API Python Client
-
 ![python-package](https://github.com/UMCUGenetics/alissa_interpret_client/actions/workflows/python-package.yml/badge.svg)
-
+Python client for the Alissa Interpret Public API v2.
 
 ## Setup from github
 ```
