@@ -15,7 +15,7 @@ pip install git+https://github.com/UMCUGenetics/alissa_interpret_client.git
 ```
 
 ## Setup from github in your requirements.txt
-Add this line to your the requirments file. Edit "branchname" if needed. Specific version tags and commits can also be used.
+Add this line to your requirements file. Edit "branchname" if needed. Specific version tags and commits can also be used.
 ```
 git+https://github.com/UMCUGenetics/alissa_interpret_client.git@branchname#egg=alissa_interpret_client
 ```

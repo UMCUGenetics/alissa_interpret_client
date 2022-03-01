@@ -40,7 +40,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'database_file',
-        help='Path to (new or existing) database file containing data from earlier export, used to skip reocuring exports.'
+        help='Path to (new or existing) database file containing data from earlier export, used to skip reoccurring exports.'
     )
     args = parser.parse_args()
 
