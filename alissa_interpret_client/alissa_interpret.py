@@ -67,7 +67,7 @@ class AlissaInterpret(object):
         """
         return self._get(f'analyses/{id}')
 
-    def get_sources(self, id):
+    def get_analysis_sources(self, id):
         """
         Get all sources used in an analysis.
 
@@ -75,7 +75,7 @@ class AlissaInterpret(object):
         """
         return self._get(f'analyses/{id}/sources')
 
-    def get_report(self, id):
+    def get_analysis_report(self, id):
         """
         Get all reports of an analysis.
 
