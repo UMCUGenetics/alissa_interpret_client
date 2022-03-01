@@ -8,7 +8,7 @@ with open("requirements.txt") as requirements_file:
 
 setuptools.setup(
     name="alissa_interpret_client",
-    version="0.0.0",
+    version="1.0.0",
     author="Robert Ernst",
     author_email="r.f.ernst-3@umcutrecht.nl",
     description="Alissa Interpret Public Api Client",
