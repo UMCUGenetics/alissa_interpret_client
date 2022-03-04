@@ -37,7 +37,9 @@ class AlissaInterpret(object):
 
         """
         uri = f'{self.base_uri}/interpret/api/2/{end_point}'
-        return self.session.get(uri, params=params, **kwargs).json()
+        response = self.session.get(uri, params=params, **kwargs)
+        response.raise_for_status()  # Raise exception on request error
+        return response.json()
 
     def _post(self, end_point, data=None, json=None, **kwargs):
         """
@@ -48,7 +50,9 @@ class AlissaInterpret(object):
         :param json: Optional json data
         """
         uri = f'{self.base_uri}/interpret/api/2/{end_point}'
-        return self.session.post(uri, data, json, **kwargs).json()
+        response = self.session.post(uri, data, json, **kwargs)
+        response.raise_for_status()  # Raise exception on request error
+        return response.json()
 
     def get_analyses(self, **kwargs):
         """Get all analyses. When kwargs are provided the result is limited to the analyses matching the criteria."""
@@ -62,6 +66,22 @@ class AlissaInterpret(object):
         :param id: analysis id
         """
         return self._get(f'analyses/{id}')
+
+    def get_analysis_sources(self, id):
+        """
+        Get all sources used in an analysis.
+
+        :param id: analysis id
+        """
+        return self._get(f'analyses/{id}/sources')
+
+    def get_analysis_report(self, id):
+        """
+        Get all reports of an analysis.
+
+        :param id: analysis id
+        """
+        return self._get(f'analyses/{id}/reports')
 
     def get_data_files(self, **kwargs):
         """Get all data files. When kwargs are provided the result is limited to the data files matching the criteria."""
@@ -87,6 +107,37 @@ class AlissaInterpret(object):
         files = {'file': open(file, 'r')}
         params = urllib.parse.urlencode({'type': type}, quote_via=urllib.parse.quote)
         return self._post('data_files', files=files, params=params)
+
+    def get_inheritance_analyses(self, analysis_id):
+        """
+        Get an inheritance analysis via id.
+
+        :param analysis_id: analysis id
+        """
+        return self._get(f'inheritance_analyses/{analysis_id}')
+
+    def post_inheritance_analyses_variants_export(self, analysis_id, marked_review=False, marked_include_report=False):
+        """
+        Request an export of all variants from an inheritance analysis via id.
+
+        :param id: analysis id
+        :param marked_review: Filter on marked for review
+        :param marked_include_report: Filter on marked include in report
+        """
+        data = {
+            'markedForReview': marked_review,
+            'markedIncludeInReport': marked_include_report,
+        }
+        return self._post(f'inheritance_analyses/{analysis_id}/molecular_variants/exports', json=data)
+
+    def get_inheritance_analyses_variants_export(self, analysis_id, export_id):
+        """
+        Get an requested export of all variants from an inheritance analysis via id.
+
+        :param analysis_id: analysis id
+        :param export_id: export id
+        """
+        return self._get(f'inheritance_analyses/{analysis_id}/molecular_variants/exports/{export_id}')
 
     def get_lab_results(self, patient_id):
         """
@@ -151,3 +202,34 @@ class AlissaInterpret(object):
             'gender': gender
         }
         return self._post('patients', json=data)
+
+    def get_patient_analyses(self, id):
+        """
+        Get an patient analysis via id.
+
+        :param id: analysis id
+        """
+        return self._get(f'patient_analyses/{id}')
+
+    def post_patient_analyses_variants_export(self, analysis_id, marked_review=False, marked_include_report=False):
+        """
+        Request an export of all variants from an patient analysis via id.
+
+        :param id: analysis id
+        :param marked_review: Filter on marked for review
+        :param marked_include_report: Filter on marked include in report
+        """
+        data = {
+            'markedForReview': marked_review,
+            'markedIncludeInReport': marked_include_report,
+        }
+        return self._post(f'patient_analyses/{analysis_id}/molecular_variants/exports', json=data)
+
+    def get_patient_analyses_variants_export(self, analysis_id, export_id):
+        """
+        Get an requested export of all variants from an patient analysis via id.
+
+        :param analysis_id: analysis id
+        :param export_id: export id
+        """
+        return self._get(f'patient_analyses/{analysis_id}/molecular_variants/exports/{export_id}')
