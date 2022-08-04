@@ -52,7 +52,7 @@ def get_variants(client, analysis_type, variant_type, analysis_id, variant_count
     export = None
     while export is None:
         try:
-            time.sleep(variant_count/10 + 1)  # delay to request exported report, min 1 sec.
+            time.sleep(variant_count/100 + 1)  # delay to request exported report, min 1 sec.
             export = get_variants_export(client, analysis_type, variant_type, analysis_id, export_id)
         except HTTPError:
             pass
@@ -116,8 +116,8 @@ if __name__ == '__main__':
         print("\t".join(database_columns), file=database_file)
 
         # Get in progress analyses and < 1 year old.
-        filter_date = datetime.now().replace(year=datetime.now().month - 1)
-        for analysis in client.get_analyses(reference='A_048230',
+        filter_date = datetime.now().replace(year=datetime.now().year - 1)
+        for analysis in client.get_analyses(
             status='IN_PROGRESS', created_after=filter_date.strftime('%Y-%m-%dT%H:%M:%S.%f+0000')
         ):
             analysis_id = analysis['id']
