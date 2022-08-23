@@ -65,12 +65,9 @@ def count_manual_review_labels(variants_export):
     for variant in variants_export:
         variant_labels = variant['classificationTreeLabelsScore']['labels'].lower()  # Correct upercase labels
 
-        if 'y,manual review' in variant_labels:
-            manual_review_count[0] += 1
-        if 'y2,manual review' in variant_labels:
-            manual_review_count[1] += 1
-        if 'y3 (rare),manual review' in variant_labels:
-            manual_review_count[2] += 1
+        manual_review_count[0] += variant_labels.count('y,manual review')
+        manual_review_count[1] += variant_labels.count('y2,manual review')
+        manual_review_count[2] += variant_labels.count('y3 (rare),manual review')
 
     return manual_review_count
 
