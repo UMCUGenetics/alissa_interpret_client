@@ -118,7 +118,7 @@ class AlissaInterpret(object):
 
     def post_inheritance_analyses_variants_export(self, analysis_id, marked_review=False, marked_include_report=False):
         """
-        Request an export of all variants from an inheritance analysis via id.
+        Request an export of all molecular variants from an inheritance analysis via id.
 
         :param id: analysis id
         :param marked_review: Filter on marked for review
@@ -132,12 +132,35 @@ class AlissaInterpret(object):
 
     def get_inheritance_analyses_variants_export(self, analysis_id, export_id):
         """
-        Get an requested export of all variants from an inheritance analysis via id.
+        Get an requested export of all molecular variants from an inheritance analysis via id.
 
         :param analysis_id: analysis id
         :param export_id: export id
         """
         return self._get(f'inheritance_analyses/{analysis_id}/molecular_variants/exports/{export_id}')
+
+    def post_inheritance_analyses_cnv_export(self, analysis_id, marked_review=False, marked_include_report=False):
+        """
+        Request an export of all copy number variants from an inheritance analysis via id.
+
+        :param id: analysis id
+        :param marked_review: Filter on marked for review
+        :param marked_include_report: Filter on marked include in report
+        """
+        data = {
+            'markedForReview': marked_review,
+            'markedIncludeInReport': marked_include_report,
+        }
+        return self._post(f'inheritance_analyses/{analysis_id}/copy_number_variations/exports', json=data)
+
+    def get_inheritance_analyses_cnv_export(self, analysis_id, export_id):
+        """
+        Get an requested export of all copy number variants from an inheritance analysis via id.
+
+        :param analysis_id: analysis id
+        :param export_id: export id
+        """
+        return self._get(f'inheritance_analyses/{analysis_id}/copy_number_variations/exports/{export_id}')
 
     def get_lab_results(self, patient_id):
         """
@@ -213,7 +236,7 @@ class AlissaInterpret(object):
 
     def post_patient_analyses_variants_export(self, analysis_id, marked_review=False, marked_include_report=False):
         """
-        Request an export of all variants from an patient analysis via id.
+        Request an export of all molecular variants from an patient analysis via id.
 
         :param id: analysis id
         :param marked_review: Filter on marked for review
@@ -227,9 +250,32 @@ class AlissaInterpret(object):
 
     def get_patient_analyses_variants_export(self, analysis_id, export_id):
         """
-        Get an requested export of all variants from an patient analysis via id.
+        Get an requested export of all molecular variants from an patient analysis via id.
 
         :param analysis_id: analysis id
         :param export_id: export id
         """
         return self._get(f'patient_analyses/{analysis_id}/molecular_variants/exports/{export_id}')
+
+    def post_patient_analyses_cnv_export(self, analysis_id, marked_review=False, marked_include_report=False):
+        """
+        Request an export of all copy number variants from an patient analysis via id.
+
+        :param id: analysis id
+        :param marked_review: Filter on marked for review
+        :param marked_include_report: Filter on marked include in report
+        """
+        data = {
+            'markedForReview': marked_review,
+            'markedIncludeInReport': marked_include_report,
+        }
+        return self._post(f'patient_analyses/{analysis_id}/copy_number_variations/exports', json=data)
+
+    def get_patient_analyses_cnv_export(self, analysis_id, export_id):
+        """
+        Get an requested export of all copy number variants from an patient analysis via id.
+
+        :param analysis_id: analysis id
+        :param export_id: export id
+        """
+        return self._get(f'patient_analyses/{analysis_id}/copy_number_variations/exports/{export_id}')
