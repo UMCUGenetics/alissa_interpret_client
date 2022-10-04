@@ -21,18 +21,55 @@ def get_analysis_data(client, type, id):
         return client.get_inheritance_analyses(id)
 
 
-def post_variants_export(client, type, id):
-    if type == 'PATIENT':
-        return client.post_patient_analyses_variants_export(id)['exportId']
-    elif type == 'INHERITANCE':
-        return client.post_inheritance_analyses_variants_export(id)['exportId']
+def post_variants_export(client, analysis_type, variant_type, analysis_id):
+    if analysis_type == 'PATIENT':
+        if variant_type == 'molecular_variant':
+            return client.post_patient_analyses_variants_export(analysis_id)['exportId']
+        elif variant_type == 'copy_number_variation':
+            return client.post_patient_analyses_cnv_export(analysis_id)['exportId']
+    elif analysis_type == 'INHERITANCE':
+        if variant_type == 'molecular_variant':
+            return client.post_inheritance_analyses_variants_export(analysis_id)['exportId']
+        elif variant_type == 'copy_number_variation':
+            return client.post_inheritance_analyses_cnv_export(analysis_id)['exportId']
 
 
-def get_variants_export(client, type, id, export_id):
-    if type == 'PATIENT':
-        return client.get_patient_analyses_variants_export(id, export_id)
-    elif type == 'INHERITANCE':
-        return client.get_inheritance_analyses_variants_export(id, export_id)
+def get_variants_export(client, analysis_type, variant_type, analysis_id, export_id):
+    if analysis_type == 'PATIENT':
+        if variant_type == 'molecular_variant':
+            return client.get_patient_analyses_variants_export(analysis_id, export_id)
+        elif variant_type == 'copy_number_variation':
+            return client.get_patient_analyses_cnv_export(analysis_id, export_id)
+    elif analysis_type == 'INHERITANCE':
+        if variant_type == 'molecular_variant':
+            return client.get_inheritance_analyses_variants_export(analysis_id, export_id)
+        elif variant_type == 'copy_number_variation':
+            return client.get_inheritance_analyses_cnv_export(analysis_id, export_id)
+
+
+def get_variants(client, analysis_type, variant_type, analysis_id, variant_count):
+    export_id = post_variants_export(client, analysis_type, variant_type, analysis_id)
+    export = None
+    while export is None:
+        try:
+            time.sleep(variant_count/100 + 1)  # delay to request exported report, min 1 sec.
+            export = get_variants_export(client, analysis_type, variant_type, analysis_id, export_id)
+        except HTTPError:
+            pass
+
+    return export
+
+
+def count_manual_review_labels(variants_export):
+    manual_review_count = [0, 0, 0]  # manual_review labes Y, Y2, Y3 (rare)
+    for variant in variants_export:
+        variant_labels = variant['classificationTreeLabelsScore']['labels'].lower()  # Correct upercase labels
+
+        manual_review_count[0] += variant_labels.count('y,manual review')
+        manual_review_count[1] += variant_labels.count('y2,manual review')
+        manual_review_count[2] += variant_labels.count('y3 (rare),manual review')
+
+    return manual_review_count
 
 
 if __name__ == '__main__':
@@ -46,7 +83,8 @@ if __name__ == '__main__':
 
     database_columns = [
         "analysis_reference", "analysis_type", "analysis_pipeline", "target_panel", "created_on", "last_updated_on",
-        "molecular_variant_count", "cnv_count", "manual_review_count_Y", "manual_review_count_Y2", "manual_review_count_Y3"
+        "molecular_variant_count", "cnv_count", "manual_review_count_Y", "manual_review_count_Y2", "manual_review_count_Y3",
+        "CNV_manual_review_count_Y", "CNV_manual_review_count_Y2", "CNV_manual_review_count_Y3",
     ]
     database_analyses = {}
 
@@ -103,36 +141,15 @@ if __name__ == '__main__':
                 [lab_result['analysisVariantCount']['copyNumberVariationCount'] for lab_result in analysis_data['labResults']]
             )
 
-            # skip analysis with cnv results
-            if cnv_count >= 1:
-                result = 'skipped_analysis_contains_cnv'
-
             # skip analysis with a lot of variants (slow export)
-            elif mol_var_count > 10000:
+            if mol_var_count > 10000:
                 result = 'skipped_large_analysis'
 
             else:
-                # Export variants and count manual review
-                export_id = post_variants_export(client, analysis_type, analysis_id)
-                export = None
-                while export is None:
-                    try:
-                        time.sleep(mol_var_count/100 + 1)  # delay to request exported report, min 1 sec.
-                        export = get_variants_export(client, analysis_type, analysis_id, export_id)
-                    except HTTPError:
-                        pass
-
-                # Count manual review labels
-                manual_review_count = [0, 0, 0]  # manual_review labes Y, Y2, Y3 (rare)
-                for variant in export:
-                    variant_labels = variant['classificationTreeLabelsScore']['labels'].lower()  # Correct upercase labels
-
-                    if 'y,manual review' in variant_labels:
-                        manual_review_count[0] += 1
-                    if 'y2,manual review' in variant_labels:
-                        manual_review_count[1] += 1
-                    if 'y3 (rare),manual review' in variant_labels:
-                        manual_review_count[2] += 1
+                molecular_variants = get_variants(client, analysis_type, 'molecular_variant', analysis_id, mol_var_count)
+                copy_number_variants = get_variants(client, analysis_type, 'copy_number_variation', analysis_id, cnv_count)
+                manual_review_count = count_manual_review_labels(molecular_variants)
+                manual_review_count.extend(count_manual_review_labels(copy_number_variants))
                 result = '\t'.join([str(count) for count in manual_review_count])
 
             # Print result
