@@ -59,6 +59,14 @@ class AlissaInterpret(object):
         params = utils.kwargs_to_dict(**kwargs)
         return self._get('analyses', params)
 
+    def get_analyses_of_patient(self, patient_id):
+        """
+        Get all analyses of a patient
+
+        :param patient_id: patient id
+        """
+        return self._get(f'patients/{patient_id}/analyses')
+
     def get_analysis(self, id):
         """
         Get an analysis via id.
