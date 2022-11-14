@@ -78,7 +78,7 @@ if __name__ == '__main__':
                 # Filter vcf on panel
                 command = (
                     '/diaggen/software/tools/bcftools-1.15.1/bcftools view -s {sample} -T bed_files/{panel}.bed {bgarray}/{run}/{vcf} | '
-                    'ssh hpct01 cat ">{hpc_location}/{vcf}_{sample}.{panel}.vcf"'
+                    'ssh hpct01 cat ">{hpc_location}/{run}_{sample}.{panel}.vcf"'
                 ).format(
                     sample=sample,
                     bgarray='/mnt/bgarray/Illumina/Exomes/',
