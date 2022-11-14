@@ -92,7 +92,7 @@ if __name__ == '__main__':
                 )
 
                 if not os.path.isfile(bed_file):
-                    print('WARNING: Bed file not found: {bed_file}'.format(bed_file))
+                    print('WARNING: Bed file not found: {bed_file}'.format(bed_file=bed_file))
                     print(command)
                 else:
                     print(command)
