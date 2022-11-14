@@ -93,9 +93,10 @@ if __name__ == '__main__':
 
                 if not os.path.isfile(bed_file):
                     print('WARNING: Bed file not found: {bed_file}'.format(bed_file=bed_file))
-                    print(command)
+                elif sample_data['run'] not in gatk_data_file['name']:
+                    print('WARNING: VCF is from other run: {vcf}'.format(vcf=gatk_data_file['name']))
                 else:
-                    print(command)
-                    os.system(command)
 
+                    os.system(command)
+                print(command)
                 print()
