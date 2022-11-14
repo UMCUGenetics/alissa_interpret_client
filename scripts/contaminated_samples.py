@@ -1,4 +1,5 @@
 import re
+import os
 
 from alissa_interpret_client.alissa_interpret import AlissaInterpret
 
@@ -68,8 +69,22 @@ if __name__ == '__main__':
                         gatk_lab_result = lab_result
                         break
                 if not gatk_lab_result:
-                    print(sample, sample_data['run'], ','.join(patient_analysis['targetPanelNames']), 'WARNING: No GATK lab result found in Alissa.', sep='\t')
+                    print(sample, sample_data['run'], patient_analysis['targetPanelNames'][0], 'WARNING: No GATK lab result found in Alissa.', sep='\t')
                     continue
                 gatk_data_file = client.get_data_file(gatk_lab_result['dataFileId'])
 
-                print(sample, sample_data['run'], ','.join(patient_analysis['targetPanelNames']), gatk_data_file['name'], gatk_lab_result['analysisVariantCount']['molecularVariantCount'], sep='\t')
+                print(sample, sample_data['run'], patient_analysis['targetPanelNames'][0], gatk_data_file['name'], gatk_lab_result['analysisVariantCount']['molecularVariantCount'], sep='\t')
+
+                # Filter vcf on panel
+                command = (
+                    '/diaggen/software/tools/bcftools-1.15.1/bcftools view -s {sample} -T bed_files/{panel}*.bed {bgarray}/{run}/{vcf} | '
+                    'ssh hpct01 cat ">{hpc_location}/{vcf}_{sample}.{panel}.vcf"'
+                ).format(
+                    sample=sample,
+                    bgarray='/mnt/bgarray/Illumina/Exomes/',
+                    run=sample_data['run'],
+                    vcf=gatk_data_file['name'],
+                    panel=''.join(patient_analysis['targetPanelNames'][0].split('_')),
+                    hpc_location='/hpc/diaggen/projects/contaminated_samples',
+                )
+                print(command)
