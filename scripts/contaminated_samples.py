@@ -76,7 +76,8 @@ if __name__ == '__main__':
                 print(sample, sample_data['run'], patient_analysis['targetPanelNames'][0], gatk_data_file['name'], gatk_lab_result['analysisVariantCount']['molecularVariantCount'], sep='\t')
 
                 # Filter vcf on panel
-                bed_file = 'bed_files/{panel}.bed'.format(panel=''.join(patient_analysis['targetPanelNames'][0].split('_')))
+                panel = ''.join(patient_analysis['targetPanelNames'][0].split('_'))  # remove _
+                bed_file = 'bed_files/{panel}.bed'.format(panel=panel)
                 command = (
                     '/diaggen/software/tools/bcftools-1.15.1/bcftools view -s {sample} -T {bed_file} {bgarray}/{run}/{vcf} | '
                     'ssh hpct01 cat ">{hpc_location}/{run}_{sample}.{panel}.vcf"'
@@ -87,6 +88,7 @@ if __name__ == '__main__':
                     vcf=gatk_data_file['name'],
                     bed_file=bed_file,
                     hpc_location='/hpc/diaggen/projects/contaminated_samples',
+                    panel=panel
                 )
 
                 if not os.path.isfile(bed_file):
