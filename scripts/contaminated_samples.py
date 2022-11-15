@@ -76,16 +76,15 @@ if __name__ == '__main__':
                 print(sample, sample_data['run'], patient_analysis['targetPanelNames'][0], gatk_data_file['name'], gatk_lab_result['analysisVariantCount']['molecularVariantCount'], sep='\t')
 
                 # Filter vcf on panel
+
                 # Remove '_' and lower version.
                 panel = patient_analysis['targetPanelNames'][0]
-                if '_' in panel:
-                    panel = panel.split('_')
+                panel = panel.split('_')
+                if len(panel) > 1:
                     panel[1] = panel[1].lower()
-                    panel = ''.join(panel)
-                elif '/' in panel:
-                    panel = panel.split('/')
-                    panel = ''.join(panel)
-
+                panel = ''.join(panel)
+                panel = panel.split('/')
+                panel = ''.join(panel)
 
                 bed_file = 'bed_files/{panel}.bed'.format(panel=panel)
                 command = (
