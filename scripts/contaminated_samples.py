@@ -79,11 +79,11 @@ if __name__ == '__main__':
                 # Remove '_' and lower version.
                 panel = patient_analysis['targetPanelNames'][0]
                 if '_' in panel:
-                    panel.split('_')
+                    panel = panel.split('_')
                     panel[1] = panel[1].lower()
                     panel = ''.join(panel)
                 elif '/' in panel:
-                    panel.split('/')
+                    panel = panel.split('/')
                     panel = ''.join(panel)
 
 
