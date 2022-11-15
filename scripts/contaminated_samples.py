@@ -85,22 +85,36 @@ if __name__ == '__main__':
                 panel = ''.join(panel)
                 panel = panel.split('/')
                 panel = ''.join(panel)
-
                 bed_file = 'bed_files/{panel}.bed'.format(panel=panel)
-                command = (
-                    '/diaggen/software/tools/bcftools-1.15.1/bcftools view -s {sample} -T {bed_file} {bgarray}/{run}/{vcf} | '
-                    'ssh hpct01 cat ">{hpc_location}/{run}_{sample}.{panel}.vcf"'
-                ).format(
-                    sample=sample,
-                    bgarray='/mnt/bgarray/Illumina/Exomes/',
-                    run=sample_data['run'],
-                    vcf=gatk_data_file['name'],
-                    bed_file=bed_file,
-                    hpc_location='/hpc/diaggen/projects/contaminated_samples',
-                    panel=panel
-                )
 
-                if not os.path.isfile(bed_file):
+                # Create commands
+                if panel == 'NONE':
+                    command = (
+                        '/diaggen/software/tools/bcftools-1.15.1/bcftools view -s {sample} {bgarray}/{run}/{vcf} | '
+                        'ssh hpct01 cat ">{hpc_location}/{run}_{sample}.{panel}.vcf"'
+                    ).format(
+                        sample=sample,
+                        bgarray='/mnt/bgarray/Illumina/Exomes/',
+                        run=sample_data['run'],
+                        vcf=gatk_data_file['name'],
+                        hpc_location='/hpc/diaggen/projects/contaminated_samples',
+                        panel='WES'
+                    )
+                else:
+                    command = (
+                        '/diaggen/software/tools/bcftools-1.15.1/bcftools view -s {sample} -T {bed_file} {bgarray}/{run}/{vcf} | '
+                        'ssh hpct01 cat ">{hpc_location}/{run}_{sample}.{panel}.vcf"'
+                    ).format(
+                        sample=sample,
+                        bgarray='/mnt/bgarray/Illumina/Exomes/',
+                        run=sample_data['run'],
+                        vcf=gatk_data_file['name'],
+                        bed_file=bed_file,
+                        hpc_location='/hpc/diaggen/projects/contaminated_samples',
+                        panel=panel
+                    )
+
+                if not os.path.isfile(bed_file) and panel != 'NONE':
                     print('WARNING: Bed file not found: {bed_file}'.format(bed_file=bed_file))
                 elif sample_data['run'] not in gatk_data_file['name']:  # Not realy a warning, sample probably sequenced twice, just skip?
                     print('WARNING: VCF is from other run: {vcf}'.format(vcf=gatk_data_file['name']))
