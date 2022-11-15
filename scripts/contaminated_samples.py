@@ -148,5 +148,5 @@ if __name__ == '__main__':
                         'VCF transferred to HPC.',
                         sep='\t'
                     )
-                    # os.system(command)
+                    os.system(command)
         print()
