@@ -104,7 +104,7 @@ if __name__ == '__main__':
                     print('WARNING: Bed file not found: {bed_file}'.format(bed_file=bed_file))
                 elif sample_data['run'] not in gatk_data_file['name']:  # Not realy a warning, sample probably sequenced twice, just skip?
                     print('WARNING: VCF is from other run: {vcf}'.format(vcf=gatk_data_file['name']))
-                # else:
-                #     os.system(command)
+                else:
+                    os.system(command)
                 print(command)
                 print()
