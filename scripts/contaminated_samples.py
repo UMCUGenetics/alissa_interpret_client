@@ -6,7 +6,7 @@ from alissa_interpret_client.alissa_interpret import AlissaInterpret
 import config
 
 
-def parse_freemix_file(file_path='/mnt/bgarray/Illumina/Exomes/Contaminatie_scores/results/from_4_percent_contamination_freemix_scores.txt'):
+def parse_freemix_file(file_path='/mnt/bgarray/Illumina/Exomes/Contaminatie_scores/results/from_1_percent_contamination_freemix_scores.txt'):
     samples = {}
     gender_options = {'F': 'FEMALE', 'M': 'MALE', 'O': 'UNKOWN'}
     with open(file_path) as freemix_file:
