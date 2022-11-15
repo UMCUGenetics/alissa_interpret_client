@@ -76,7 +76,11 @@ if __name__ == '__main__':
                 print(sample, sample_data['run'], patient_analysis['targetPanelNames'][0], gatk_data_file['name'], gatk_lab_result['analysisVariantCount']['molecularVariantCount'], sep='\t')
 
                 # Filter vcf on panel
-                panel = ''.join(patient_analysis['targetPanelNames'][0].split('_'))  # remove _
+                # Remove '_' and lower version.
+                panel = patient_analysis['targetPanelNames'][0].split('_')
+                panel[1] = panel[1].lower()
+                panel = ''.join(panel)
+
                 bed_file = 'bed_files/{panel}.bed'.format(panel=panel)
                 command = (
                     '/diaggen/software/tools/bcftools-1.15.1/bcftools view -s {sample} -T {bed_file} {bgarray}/{run}/{vcf} | '
@@ -93,10 +97,9 @@ if __name__ == '__main__':
 
                 if not os.path.isfile(bed_file):
                     print('WARNING: Bed file not found: {bed_file}'.format(bed_file=bed_file))
-                elif sample_data['run'] not in gatk_data_file['name']:
+                elif sample_data['run'] not in gatk_data_file['name']:  # Not realy a warning, sample probably sequenced twice, just skip?
                     print('WARNING: VCF is from other run: {vcf}'.format(vcf=gatk_data_file['name']))
-                else:
-
-                    os.system(command)
+                # else:
+                #     os.system(command)
                 print(command)
                 print()
