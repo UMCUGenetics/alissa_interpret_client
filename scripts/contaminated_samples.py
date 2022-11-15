@@ -78,7 +78,8 @@ if __name__ == '__main__':
                 # Filter vcf on panel
                 # Remove '_' and lower version.
                 panel = patient_analysis['targetPanelNames'][0].split('_')
-                panel[1] = panel[1].lower()
+                if len(panel) > 1:
+                    panel[1] = panel[1].lower()
                 panel = ''.join(panel)
 
                 bed_file = 'bed_files/{panel}.bed'.format(panel=panel)
