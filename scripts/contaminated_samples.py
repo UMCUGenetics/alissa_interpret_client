@@ -145,7 +145,7 @@ if __name__ == '__main__':
                         patient_analysis['targetPanelNames'][0],
                         gatk_data_file['name'],
                         gatk_lab_result['analysisVariantCount']['molecularVariantCount'],
-                        'VCF transferred to HPC.'
+                        'VCF transferred to HPC.',
                         sep='\t'
                     )
                     # os.system(command)
