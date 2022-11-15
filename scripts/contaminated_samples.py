@@ -69,11 +69,15 @@ if __name__ == '__main__':
                         gatk_lab_result = lab_result
                         break
                 if not gatk_lab_result:
-                    print(sample, sample_data['run'], patient_analysis['targetPanelNames'][0], 'WARNING: No GATK lab result found in Alissa.', sep='\t')
+                    print(
+                        sample,
+                        sample_data['run'],
+                        patient_analysis['targetPanelNames'][0],
+                        'WARNING: No GATK lab result found in Alissa.',
+                        sep='\t'
+                    )
                     continue
                 gatk_data_file = client.get_data_file(gatk_lab_result['dataFileId'])
-
-                print(sample, sample_data['run'], patient_analysis['targetPanelNames'][0], gatk_data_file['name'], gatk_lab_result['analysisVariantCount']['molecularVariantCount'], sep='\t')
 
                 # Filter vcf on panel
 
@@ -115,10 +119,34 @@ if __name__ == '__main__':
                     )
 
                 if not os.path.isfile(bed_file) and panel != 'NONE':
-                    print('WARNING: Bed file not found: {bed_file}'.format(bed_file=bed_file))
+                    print(
+                        sample,
+                        sample_data['run'],
+                        patient_analysis['targetPanelNames'][0],
+                        gatk_data_file['name'],
+                        gatk_lab_result['analysisVariantCount']['molecularVariantCount'],
+                        'WARNING: Bed file not found: {bed_file}'.format(bed_file=bed_file),
+                        sep='\t'
+                    )
                 elif sample_data['run'] not in gatk_data_file['name']:  # Not realy a warning, sample probably sequenced twice, just skip?
-                    print('WARNING: VCF is from other run: {vcf}'.format(vcf=gatk_data_file['name']))
-                # else:
-                #     os.system(command)
-                print(command)
+                    print(
+                        sample,
+                        sample_data['run'],
+                        patient_analysis['targetPanelNames'][0],
+                        gatk_data_file['name'],
+                        gatk_lab_result['analysisVariantCount']['molecularVariantCount'],
+                        'WARNING: VCF is from other run: {vcf}'.format(vcf=gatk_data_file['name']),
+                        sep='\t'
+                    )
+                else:
+                    print(
+                        sample,
+                        sample_data['run'],
+                        patient_analysis['targetPanelNames'][0],
+                        gatk_data_file['name'],
+                        gatk_lab_result['analysisVariantCount']['molecularVariantCount'],
+                        'VCF transferred to HPC.'
+                        sep='\t'
+                    )
+                    # os.system(command)
                 print()
